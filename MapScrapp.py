@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.common.keys import Keys
 import argparse 
@@ -10,12 +11,13 @@ from bs4 import BeautifulSoup
 import re
 from geopy.geocoders import Nominatim
 
+service = Service()
 options = Options() 
 options.add_argument('--headless')
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 # Objeto webdriver
-browser = webdriver.Chrome(options=options)
+browser = webdriver.Chrome(service=service,options=options)
 #OBJETO
 links = list()
 lists = []
@@ -135,6 +137,10 @@ if args.loc:
                 tel = tel.replace("phone:tel:","")
             except Exception as e:
                 tel ="No tiene telefono"
+            
+            #Por ahora sociales se mantiene con lo de la web.
+            sociales = "Sin sociales."
+            #
 
             #Conseguir web
             title = browser.find_elements(By.TAG_NAME,"a")
@@ -146,9 +152,9 @@ if args.loc:
                         webs = stars
                 except Exception as e:
                     webs = "Sin página web"
-                    print("No tiene página web")
-            if (webs[0:14]=="http://facebook" or webs[0:14]=="http://instagram"):
-                sociales = sociales + webs
+
+            if (webs.find("instagram") or webs.find("facebook")):
+                sociales = webs
                 webs = "Sin página web."
 
             #Conseguir Locación
@@ -156,7 +162,7 @@ if args.loc:
                 loca = browser.find_element(By.CLASS_NAME,"Io6YTe.fontBodyMedium.kR99db.fdkmkc").text
             except Exception as e:
                 loca = "NADA"
-
+            
             #Conseguir el email desde su página web
             try:
                 result = scrape_email_from_website(webs)
@@ -165,4 +171,4 @@ if args.loc:
                 y = "Sin email."
             if (nombre != "NONAME"):
                 lists.append(Servicio(nombre,x,webs,loca,y,tel,sociales))
-                f.write("Nombre= %s\n Maps Link= %s\n Página web= %s\n Dirección= %s\n Email= %s\n Sociales= %s\n\n"%(nombre,x,webs,loca,y,tel,sociales))
+                f.write("Nombre= %s\n Maps Link= %s\n Página web= %s\n Dirección= %s\n Email= %s\n Telefono= %s\n Sociales= %s \n\n"%(nombre,x,webs,loca,y,tel,sociales))
