@@ -38,12 +38,12 @@ def scrape_buttons_in_website(url):
     data = str(soup.find_all('a')) # find all <a> tags
     matches = []
 
-    # Extract links from the HTML content
+    # Extraer links desde el contenido del HTML
     for match in re.finditer('href="/', data):
         find = data[match.start() + 6:match.end() + 30]
         find = find[:find.find('"')].strip()
         
-        # Construct the final URL
+        # Construir la URL Final.
         if find != "/":
             final_url = f'{url}{find}'
             matches.append(final_url)
@@ -52,7 +52,7 @@ def scrape_buttons_in_website(url):
 
 def scrape_email_from_website(url):
     matches = scrape_buttons_in_website(url)
-    # Iterate through the links and scrape emails
+    # Iteramos sobre los links y buscamos sus mails
     for link in matches:
         try:
             response = session.get(link)
@@ -153,7 +153,7 @@ if args.loc:
                 except Exception as e:
                     webs = "Sin página web"
 
-            if (webs.find("instagram") or webs.find("facebook")):
+            if ("instagram" in webs or "facebook" in webs):
                 sociales = webs
                 webs = "Sin página web."
 
