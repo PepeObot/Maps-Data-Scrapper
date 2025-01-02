@@ -153,7 +153,6 @@ if args.loc:
 
             w1=webs[:18]
             w2=webs[:17]
-            print(w1,"\n",w2)
             if (w1=="http://faceboo"):
                 sociales = webs
                 
