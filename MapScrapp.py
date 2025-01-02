@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.common.keys import Keys
 import argparse 
@@ -11,13 +10,12 @@ from bs4 import BeautifulSoup
 import re
 from geopy.geocoders import Nominatim
 
-service = Service()
 options = Options() 
 options.add_argument('--headless')
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 # Objeto webdriver
-browser = webdriver.Chrome(service=service,options=options)
+browser = webdriver.Chrome(options=options)
 #OBJETO
 links = list()
 lists = []
@@ -153,9 +151,14 @@ if args.loc:
                 except Exception as e:
                     webs = "Sin página web"
 
-            if (webs.find("instagram") or webs.find("facebook")):
+            w1=webs[:18]
+            w2=webs[:17]
+            print(w1,"\n",w2)
+            if (w1=="http://faceboo"):
                 sociales = webs
-                webs = "Sin página web."
+                
+            if (w2=="http://instagram."):
+                sociales = webs
 
             #Conseguir Locación
             try:
